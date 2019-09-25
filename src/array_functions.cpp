@@ -32,7 +32,7 @@ struct entry
 };
 
 //TODO add a global array of entry structs (global to this file)
-entry globalArray[2000];
+entry globalArray[1500];
 
 //TODO add variable to keep track of next available slot in array
 	//entry nextVar = globalArray[0];
@@ -87,7 +87,9 @@ bool openFile(std::fstream& myfile, const std::string& myFileName,
 }
 
 void closeFile(std::fstream& myfile){
+	if (myfile.is_open()){
 	myfile.close();
+	}
 }
 
 int writeArraytoFile(const std::string &outputfilename){
