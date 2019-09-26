@@ -32,7 +32,7 @@ struct entry
 };
 
 //TODO add a global array of entry structs (global to this file)
-entry globalArray[1500];
+entry globalArray[MAX_WORDS];
 
 //TODO add variable to keep track of next available slot in array
 	//entry nextVar = globalArray[0];
@@ -50,34 +50,84 @@ void clearArray(){
 }
 
 int getArraySize(){
-	int size = *(&globalArray + 1) - globalArray;
-	return size;
+
+	return trackNext;
 }
 
 std::string getArrayWordAt(int i){
-	return STR_NOT_DONE;
+
+	if (i > trackNext or i < 0){
+		return TEST_DATA_NON_EXISTANT;
+	}
+	else{
+		return globalArray[i].word;
+	}
 }
 
 int getArrayWord_NumbOccur_At(int i){
-	return NOT_DONE;
+	if (i > trackNext or i < 0){
+		return FAIL_NO_ARRAY_DATA;
+	}
+	else{
+		return globalArray[i].number_occurences;
+	}
 }
 
+/*loop through whole file, one line at a time
+ * call processLine on each line
+ * returns false: myfstream is not open
+ *         true: otherwise*/
 bool processFile(std::fstream &myfstream){
-	return FALSE_NOT_DONE;
+
+	bool fileOpen = myfstream.is_open();
+	if (!fileOpen){
+		return fileOpen;
+	}
+
+	string line;
+
+	while (!myfstream.eof()){
+		getline(myfstream, line);
+		processLine(line);
+	}
+
+	closeFile(myfstream);
+	return fileOpen;
 }
 
 void processLine(std::string &myString){
 
+	stringstream ss(myString);
+	string tempToken;
+
+	while (getline(ss, tempToken, CHAR_TO_SEARCH_FOR)){
+		processToken(tempToken);
+	}
 }
 
 void processToken(std::string &token){
 
+	if (strip_unwanted_chars(token)){
+		for (int i = 0; i < trackNext; i++){
+			if (token == globalArray[i].word){
+				globalArray[i].number_occurences += 1;
+				return;
+			}
+		}
+	}
+
+	entry newEntry;
+	newEntry.word = token;
+	newEntry.number_occurences = 1;
+	globalArray[trackNext] = newEntry;
+	trackNext++;
 }
 
 bool openFile(std::fstream& myfile, const std::string& myFileName,
 		std::ios_base::openmode mode ){ //= std::ios_base::in
 
-	myfile.open(myFileName);
+
+	myfile.open(myFileName.c_str(), ios::in);
 	if (myfile.is_open()){
 		return true;
 	}
@@ -90,6 +140,7 @@ void closeFile(std::fstream& myfile){
 	if (myfile.is_open()){
 	myfile.close();
 	}
+
 }
 
 int writeArraytoFile(const std::string &outputfilename){
@@ -97,6 +148,7 @@ int writeArraytoFile(const std::string &outputfilename){
 }
 
 void sortArray(constants::sortOrder so){
+
 
 }
 
