@@ -46,6 +46,12 @@ const bool FALSE_NOT_DONE = false;
 const std::string STR_NOT_DONE = "not done";
 
 void clearArray(){
+
+	for (int i = 0; i < MAX_WORDS; i++){
+		globalArray[i].word = "";
+		globalArray[i].number_occurences = 0;
+	}
+
 	trackNext = 0;
 }
 
@@ -107,20 +113,28 @@ void processLine(std::string &myString){
 
 void processToken(std::string &token){
 
+
 	if (strip_unwanted_chars(token)){
+		string upToken = token;
+		toUpper(upToken);
 		for (int i = 0; i < trackNext; i++){
-			if (token == globalArray[i].word){
+			string upWord = globalArray[i].word;
+			toUpper(upWord);
+			if (upToken == upWord){
 				globalArray[i].number_occurences += 1;
 				return;
 			}
 		}
-	}
 
-	entry newEntry;
-	newEntry.word = token;
-	newEntry.number_occurences = 1;
-	globalArray[trackNext] = newEntry;
-	trackNext++;
+		entry newEntry;
+		newEntry.word = token;
+		newEntry.number_occurences = 1;
+		globalArray[trackNext] = newEntry;
+		trackNext++;
+	}
+	else{ //not a valid token, only unwanted chars
+		return;
+	}
 }
 
 bool openFile(std::fstream& myfile, const std::string& myFileName,
@@ -144,7 +158,30 @@ void closeFile(std::fstream& myfile){
 }
 
 int writeArraytoFile(const std::string &outputfilename){
-	return NOT_DONE;
+
+	ofstream outputFile;
+
+	outputFile.open(outputfilename.c_str(), ios_base::out);
+	if (!outputFile.is_open()){
+		return FAIL_FILE_DID_NOT_OPEN;
+	}
+
+	if (trackNext == 0){
+		return FAIL_NO_ARRAY_DATA;
+	}
+
+	for (int i = 0; i < trackNext; i++){
+		outputFile << globalArray[i].word << " " << globalArray[i].number_occurences << endl;
+	}
+
+	outputFile.close();
+	if (!outputFile.is_open()){
+		return SUCCESS;
+	}
+	else{
+		return FAIL;
+	}
+
 }
 
 void sortArray(constants::sortOrder so){ //taking the sort order enums
@@ -158,7 +195,7 @@ void sortArray(constants::sortOrder so){ //taking the sort order enums
 	case ASCENDING:
 		for (int i = 0; i < trackNext; i++){
 			for (int j = i + 1; j < trackNext; j++){
-				if (globalArray[i].word < globalArray[j].word){
+				if (globalArray[i].word > globalArray[j].word){
 					//switch i to j
 					trackEntry = globalArray[i];
 					globalArray[i] = globalArray[j];
@@ -167,7 +204,7 @@ void sortArray(constants::sortOrder so){ //taking the sort order enums
 			}
 		}
 		break;
-	/*case DESCENDING:
+	case DESCENDING:
 		for (int i = 0; i < trackNext; i++){
 			for (int j = i + 1; j < trackNext; j++){
 				if (globalArray[i].word < globalArray[j].word){
@@ -188,7 +225,8 @@ void sortArray(constants::sortOrder so){ //taking the sort order enums
 					globalArray[j] = trackEntry;
 				}
 			}
-		}*/
+		}
+		break;
 	}
 
 }
