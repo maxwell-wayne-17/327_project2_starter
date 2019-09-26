@@ -27,8 +27,8 @@ using namespace constants;
 //TODO define a structure to track words and number of times they occur
 struct entry
 {
-	string word;
-	int number_occurences;
+	string word = "";
+	int number_occurences = 0;
 };
 
 //TODO add a global array of entry structs (global to this file)
@@ -147,8 +147,49 @@ int writeArraytoFile(const std::string &outputfilename){
 	return NOT_DONE;
 }
 
-void sortArray(constants::sortOrder so){
+void sortArray(constants::sortOrder so){ //taking the sort order enums
 
+	entry trackEntry;
+
+	switch(so){
+	case NONE:
+		break;
+
+	case ASCENDING:
+		for (int i = 0; i < trackNext; i++){
+			for (int j = i + 1; j < trackNext; j++){
+				if (globalArray[i].word < globalArray[j].word){
+					//switch i to j
+					trackEntry = globalArray[i];
+					globalArray[i] = globalArray[j];
+					globalArray[j] = trackEntry;
+				}
+			}
+		}
+		break;
+	/*case DESCENDING:
+		for (int i = 0; i < trackNext; i++){
+			for (int j = i + 1; j < trackNext; j++){
+				if (globalArray[i].word < globalArray[j].word){
+					//switch i to j
+					trackEntry = globalArray[i];
+					globalArray[i] = globalArray[j];
+					globalArray[j] = trackEntry;
+				}
+			}
+		}
+		break;
+	case NUMBER_OCCURRENCES:
+		for (int i = 0; i < trackNext; i++){
+			for (int j = 0; j < trackNext; j++){
+				if (globalArray[i].number_occurences > globalArray[j].number_occurences){
+					trackEntry = globalArray[i];
+					globalArray[i] = globalArray[j];
+					globalArray[j] = trackEntry;
+				}
+			}
+		}*/
+	}
 
 }
 
