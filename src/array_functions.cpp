@@ -137,7 +137,7 @@ bool openFile(std::fstream& myfile, const std::string& myFileName,
 		std::ios_base::openmode mode ){ //= std::ios_base::in
 
 
-	myfile.open(myFileName.c_str(), ios::in);
+	myfile.open(myFileName.c_str(), mode);
 	if (myfile.is_open()){
 		return true;
 	}
@@ -155,10 +155,11 @@ void closeFile(std::fstream& myfile){
 
 int writeArraytoFile(const std::string &outputfilename){
 
-	ofstream outputFile;
+	fstream outputFile;
 
-	outputFile.open(outputfilename.c_str(), ios::out);
-	if (!outputFile.is_open()){
+	//outputFile.open(outputfilename.c_str(), ios::out);
+	bool openAttempt = openFile(outputFile, outputfilename, fstream::out);
+	if (!openAttempt){
 		return FAIL_FILE_DID_NOT_OPEN;
 	}
 
@@ -176,7 +177,7 @@ int writeArraytoFile(const std::string &outputfilename){
 	}
 	else{
 		return FAIL;
-	} */
+	}*/
 	return SUCCESS;
 
 }
@@ -193,7 +194,7 @@ void sortArray(constants::sortOrder so){ //taking the sort order enums
 		for (int i = 0; i < trackNext; i++){
 			for (int j = i + 1; j < trackNext; j++){
 				if (globalArray[i].word > globalArray[j].word){
-					//switch i to j
+					//advance variable at i to j
 					trackEntry = globalArray[i];
 					globalArray[i] = globalArray[j];
 					globalArray[j] = trackEntry;
@@ -205,7 +206,7 @@ void sortArray(constants::sortOrder so){ //taking the sort order enums
 		for (int i = 0; i < trackNext; i++){
 			for (int j = i + 1; j < trackNext; j++){
 				if (globalArray[i].word < globalArray[j].word){
-					//switch i to j
+					//advance variable at i to j
 					trackEntry = globalArray[i];
 					globalArray[i] = globalArray[j];
 					globalArray[j] = trackEntry;
