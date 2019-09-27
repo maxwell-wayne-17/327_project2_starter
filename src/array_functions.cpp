@@ -47,11 +47,6 @@ const std::string STR_NOT_DONE = "not done";
 
 void clearArray(){
 
-	for (int i = 0; i < MAX_WORDS; i++){
-		globalArray[i].word = "";
-		globalArray[i].number_occurences = 0;
-	}
-
 	trackNext = 0;
 }
 
@@ -93,7 +88,6 @@ bool processFile(std::fstream &myfstream){
 		processLine(line);
 	}
 
-	//closeFile(myfstream);
 	return fileOpen;
 }
 
@@ -157,7 +151,6 @@ int writeArraytoFile(const std::string &outputfilename){
 
 	fstream outputFile;
 
-	//outputFile.open(outputfilename.c_str(), ios::out);
 	bool openAttempt = openFile(outputFile, outputfilename, fstream::out);
 	if (!openAttempt){
 		return FAIL_FILE_DID_NOT_OPEN;
@@ -171,13 +164,6 @@ int writeArraytoFile(const std::string &outputfilename){
 		outputFile << globalArray[i].word << " " << globalArray[i].number_occurences << endl;
 	}
 
-	/*outputFile.close();
-	if (!outputFile.is_open()){
-		return SUCCESS;
-	}
-	else{
-		return FAIL;
-	}*/
 	return SUCCESS;
 
 }
@@ -187,8 +173,7 @@ void sortArray(constants::sortOrder so){ //taking the sort order enums
 	entry trackEntry;
 
 	switch(so){
-		//case NONE:
-			//break;
+		case NONE:{break;}
 
 		case ASCENDING:{
 			bool swap = true;
@@ -207,33 +192,45 @@ void sortArray(constants::sortOrder so){ //taking the sort order enums
 						globalArray[i+1] = holder;
 					}
 				}
-				//swap = true;
 			}
 		break;
 		}
-	/*case DESCENDING:
-		for (int i = 0; i < trackNext; i++){
-			for (int j = i + 1; j < trackNext; j++){
-				if (globalArray[i].word < globalArray[j].word){
-					//advance variable at i to j
-					trackEntry = globalArray[i];
-					globalArray[i] = globalArray[j];
-					globalArray[j] = trackEntry;
-				}
-			}
-		}
+	case DESCENDING:{
+		bool swap = true;
+					while(swap){
+						swap = false;
+						for (int i = 0; i < trackNext - 1; i++){
+							string mainWord = globalArray[i].word;
+							string compWord = globalArray[i+1].word;
+
+							toUpper(mainWord);
+							toUpper(compWord);
+							if(mainWord < compWord){
+								swap = true;
+								entry holder = globalArray[i];
+								globalArray[i] = globalArray[i+1];
+								globalArray[i+1] = holder;
+							}
+						}
+					}
 		break;
-	case NUMBER_OCCURRENCES:
-		for (int i = 0; i < trackNext; i++){
-			for (int j = 0; j < trackNext; j++){
-				if (globalArray[i].number_occurences > globalArray[j].number_occurences){
-					trackEntry = globalArray[i];
-					globalArray[i] = globalArray[j];
-					globalArray[j] = trackEntry;
-				}
-			}
-		}
-		break; */
+	}
+	case NUMBER_OCCURRENCES:{
+		bool swap = true;
+					while(swap){
+						swap = false;
+						for (int i = 0; i < trackNext - 1; i++){
+
+							if(globalArray[i].number_occurences > globalArray[i+1].number_occurences){
+								swap = true;
+								entry holder = globalArray[i];
+								globalArray[i] = globalArray[i+1];
+								globalArray[i+1] = holder;
+							}
+						}
+					}
+		break;
+	}
 	}
 
 }
