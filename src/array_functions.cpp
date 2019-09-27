@@ -62,12 +62,8 @@ int getArraySize(){
 
 std::string getArrayWordAt(int i){
 
-	if (i > trackNext or i < 0){
-		return TEST_DATA_NON_EXISTANT;
-	}
-	else{
-		return globalArray[i].word;
-	}
+	return globalArray[i].word;
+
 }
 
 int getArrayWord_NumbOccur_At(int i){
@@ -132,7 +128,7 @@ void processToken(std::string &token){
 		globalArray[trackNext] = newEntry;
 		trackNext++;
 	}
-	else{ //not a valid token, only unwanted chars
+	else{ //not a valid token, only unwanted chars, do nothing
 		return;
 	}
 }
@@ -161,12 +157,12 @@ int writeArraytoFile(const std::string &outputfilename){
 
 	ofstream outputFile;
 
-	outputFile.open(outputfilename.c_str(), ios_base::out);
+	outputFile.open(outputfilename.c_str(), ios::out);
 	if (!outputFile.is_open()){
 		return FAIL_FILE_DID_NOT_OPEN;
 	}
 
-	if (trackNext == 0){
+	if (getArraySize() == 0){
 		return FAIL_NO_ARRAY_DATA;
 	}
 
@@ -174,13 +170,14 @@ int writeArraytoFile(const std::string &outputfilename){
 		outputFile << globalArray[i].word << " " << globalArray[i].number_occurences << endl;
 	}
 
-	outputFile.close();
+	/*outputFile.close();
 	if (!outputFile.is_open()){
 		return SUCCESS;
 	}
 	else{
 		return FAIL;
-	}
+	} */
+	return SUCCESS;
 
 }
 
